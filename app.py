@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import sqlite3
 import os
 import uuid
+import socket
 
 app = Flask(__name__,static_folder='songs')
 
@@ -80,6 +81,20 @@ def download(filename):
 @app.route('/play/<path:filename>', methods=['GET'])
 def play(filename):
     return render_template('play_song.html',filename=filename)
+
+
+@app.route('/play_shared_song/<string:enc>', methods=['GET'])
+def play_shared_song(enc):
+    filename = "aaa.mp3"
+    return render_template('play_shared_song.html',filename=filename)
+
+
+@app.route('/share/<string:uuid>', methods=['GET'])
+def share(uuid):
+    port = "5000"
+    ip_address = "localhost"
+    url = "http://"+ip_address+":"+port+"/play_shared_song/" + uuid
+    return render_template('share_page.html', url=url)
 
 
 def make_items(cursor):
