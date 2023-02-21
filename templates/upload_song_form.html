@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Upload</title>
+</head>
+<body>
+<br><br><br><br>
+  <form action="/upload_song" enctype="multipart/form-data" method="POST">
+    Album: <input type="text" name="album"/> <br><br>
+    Title: <input type="text" name="title"/> <br><br>
+    Artist: <input type="text" name="artist"/> <br><br>
+      <input type="file" id="songFile" name="filename"> <br><br>
+
+      <input type="submit" value = "Add Song">
+  </form>
+
+</body>
+</html>

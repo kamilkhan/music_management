@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <title>Music Management Systemk</title>
 <head>
 <style>
@@ -9,6 +9,11 @@ table, th, td {
 </style>
 </head>
 <body>
+<br><br><br><br>
+<form action="/upload_song_form" method="get">
+<input type="submit" value = "Add New Song"/>
+</form>
+<br><br><br>
 <table>
     <tr><td>Album</td><td>Title</td><td>Artist</td></tr>
 {% for item in items %}
