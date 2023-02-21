@@ -34,7 +34,6 @@ def upload_form():
 def upload():
     if request.method == 'POST':
         d = request.files
-        #print("EE" + d.get('filename'))
         if d.get("filename") is None:
             return render_template("error_page.html", an_optional_message="Error uploading file")
         album= request.form.get('album')
@@ -43,12 +42,10 @@ def upload():
         f = d.get('filename')
         fname = f.filename
         f.save(fname)
-        print(album, title, artist, fname)
         conn = sqlite3.connect('music')
         cur = conn.cursor()
-        cur.execute("INSERT INTO songs (album,title,artist,file_name) values (?,?,?,?)",
-                     (album, title, artist, fname))
-        #cur.execute("INSERT INTO s (a) values (?)", album)
+        cur.execute("INSERT INTO songs (album,title,artist,file_name) values (?,?,?,?)",(album, title, artist, fname))
+
         conn.commit()
         conn.close()
     return redirect("/home", code=302)
