@@ -1,24 +1,30 @@
-from flask import render_template,Flask,request, redirect
+from flask import render_template,Flask,request,redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import sqlite3
 import os
 import uuid
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='songs')
 
 
 @app.route('/home')
 def home():
     conn = sqlite3.connect('music')
-    items = list()
     cursor = conn.execute("SELECT album,title,artist,file_name,uuid from songs")
-    for row in cursor:
-        item = dict()
-        item['album'] = row[0]
-        item['title'] = row[1]
-        item['artist'] = row[2]
-        item['uuid'] = row[4]
-        items.append(item)
+    items = make_items(cursor)
+    conn.close()
+    return render_template('home.html', items=items)
+
+
+@app.route('/search', methods=['POST'])
+def search():
+    search_token = request.form.get('search')
+    if search_token == '':
+        return redirect("/home", code=302)
+    conn = sqlite3.connect('music')
+    query = "SELECT album,title,artist,file_name,uuid from songs where album = '" + search_token + "'"
+    cursor = conn.execute(query)
+    items = make_items(cursor)
     conn.close()
     return render_template('home.html', items=items)
 
@@ -62,3 +68,23 @@ def delete(uuid):
     conn.commit()
     conn.close()
     return redirect("/home", code=302)
+
+
+@app.route('/download/<path:filename>', methods=['GET'])
+def download(filename):
+    return send_from_directory(directory='songs', path=filename, as_attachment=True)
+
+
+def make_items(cursor):
+    items = []
+    for row in cursor:
+        item = dict()
+        item['album'] = row[0]
+        item['title'] = row[1]
+        item['artist'] = row[2]
+        item['fname'] = row[3]
+        item['uuid'] = row[4]
+        items.append(item)
+    return items
+
+

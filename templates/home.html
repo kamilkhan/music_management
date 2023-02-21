@@ -10,10 +10,19 @@ table, th, td {
 </head>
 <body>
 <br><br><br><br>
-<form action="/upload_song_form" method="get">
-<input type="submit" value = "Add New Song"/>
+<form action="/upload_song_form">
+    <input type="submit" value = "Add New Song"/>
 </form>
-<br><br><br>
+
+<br><br>
+<form action="/search" method="post">
+    Enter Album or Title or Artist
+    <input type="text" name="search" value = ""/>
+    <input type="submit" value = "Search"/>
+</form>
+
+
+<br><br>
 <table>
     <tr><td>Album</td><td>Title</td><td>Artist</td></tr>
 {% for item in items %}
@@ -25,6 +34,11 @@ table, th, td {
     <td>
         <form action="/delete/{{item.uuid}}" method="post">
             <input button type="submit" value = "Delete"/>
+        </form>
+    </td>
+    <td>
+        <form action="/download/{{item.fname}}" method="get">
+            <input button type="submit" value = "Download"/>
         </form>
     </td>
  </TR>
