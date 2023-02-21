@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<title>Music Management Systemk</title>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<table>
+    <tr><td>Album</td><td>Title</td><td>Artist</td></tr>
+{% for item in items %}
+<TR>
+    <TD>{{item.album}}</TD>
+    <TD>{{item.title}}</TD>
+    <TD>{{item.artist}}</TD>
+ </TR>
+{% endfor %}
+</table>
+</body>
+</html>
