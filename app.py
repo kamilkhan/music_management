@@ -5,8 +5,7 @@ import os
 import uuid
 import socket
 
-app = Flask(__name__,static_folder='songs')
-
+app = Flask(__name__, static_folder='songs')
 
 @app.route('/home')
 def home():
