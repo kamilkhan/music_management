@@ -22,16 +22,18 @@ def search():
     if search_token == '':
         return redirect("/home", code=302)
     conn = sqlite3.connect('music')
-    query = "SELECT album,title,artist,file_name,uuid from songs where album = '" + search_token + "'"
+    query = "select album,title,artist,file_name,uuid from songs where album = '" + search_token \
+            + "' or title = '" + search_token + "' or artist = '" + search_token + "'"
+    print(query)
     cursor = conn.execute(query)
     items = make_items(cursor)
     conn.close()
-    return render_template('home.html', items=items)
+    return render_template('home.html', items=items, search_text = search_token)
 
 
 @app.route("/")
 def root():
-    return "<p>Welcome to Music Management, Sharing and Streaming Application</p>"
+    return redirect("/home", code=302)
 
 
 @app.route('/upload_song_form')
@@ -43,18 +45,19 @@ def upload_form():
 def upload():
     if request.method == 'POST':
         d = request.files
-        if d.get("filename") is None:
-            return render_template("error_page.html", an_optional_message="Error uploading file")
-        album= request.form.get('album')
+        album = request.form.get('album')
         title = request.form.get('title')
         artist = request.form.get('artist')
         f = d.get('filename')
         fname = f.filename
+        if album == '' and title == '' and artist == "":
+            return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
+        if fname == '':
+            return render_template("upload_song_form.html", error_message = "Please select Audio File")
         f.save(os.getcwd() + "/songs/"+fname)
         conn = sqlite3.connect('music')
         cur = conn.cursor()
         cur.execute("INSERT INTO songs (uuid,album,title,artist,file_name) values (?,?,?,?,?)",(str(uuid.uuid1()),album, title, artist, fname))
-
         conn.commit()
         conn.close()
     return redirect("/home", code=302)

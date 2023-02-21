@@ -9,20 +9,19 @@ table, th, td {
 </style>
 </head>
 <body>
-<br><br><br><br>
-<form action="/upload_song_form">
-    <input type="submit" value = "Add New Song"/>
-</form>
-
+<h1> Welcome to Music Management Portal</h1>
 <br><br>
 <form action="/search" method="post">
-    Enter Album or Title or Artist
-    <input type="text" name="search" value = ""/>
+    Enter Album/Title/Artist
+    <input type="text" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
 
-
-<br><br>
+<br>
+<form action="/upload_song_form">
+    <input type="submit" value = "Upload New Song"/>
+</form>
+<br>
 <table>
     <tr><td>Album</td><td>Title</td><td>Artist</td></tr>
 {% for item in items %}
@@ -44,6 +43,11 @@ table, th, td {
      <td>
         <form action="/play/{{item.fname}}" method="get">
             <input button type="submit" value = "Play"/>
+        </form>
+    </td>
+    <td>
+        <form action="/share/{{item.fname}}" method="get">
+            <input button type="submit" value = "Share"/>
         </form>
     </td>
  </TR>
