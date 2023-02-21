@@ -21,6 +21,12 @@ table, th, td {
     <TD>{{item.album}}</TD>
     <TD>{{item.title}}</TD>
     <TD>{{item.artist}}</TD>
+
+    <td>
+        <form action="/delete/{{item.uuid}}" method="post">
+            <input button type="submit" value = "Delete"/>
+        </form>
+    </td>
  </TR>
 {% endfor %}
 </table>

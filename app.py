@@ -1,6 +1,8 @@
 from flask import render_template,Flask,request, redirect
 from werkzeug.utils import secure_filename
 import sqlite3
+import os
+import uuid
 
 app = Flask(__name__)
 
@@ -9,15 +11,16 @@ app = Flask(__name__)
 def home():
     conn = sqlite3.connect('music')
     items = list()
-    cursor = conn.execute("SELECT album,title,artist,file_name from songs")
+    cursor = conn.execute("SELECT album,title,artist,file_name,uuid from songs")
     for row in cursor:
         item = dict()
         item['album'] = row[0]
         item['title'] = row[1]
         item['artist'] = row[2]
+        item['uuid'] = row[4]
         items.append(item)
     conn.close()
-    return render_template('home.html',items=items)
+    return render_template('home.html', items=items)
 
 
 @app.route("/")
@@ -41,11 +44,21 @@ def upload():
         artist = request.form.get('artist')
         f = d.get('filename')
         fname = f.filename
-        f.save(fname)
+        f.save(os.getcwd() + "/songs/"+fname)
         conn = sqlite3.connect('music')
         cur = conn.cursor()
-        cur.execute("INSERT INTO songs (album,title,artist,file_name) values (?,?,?,?)",(album, title, artist, fname))
+        cur.execute("INSERT INTO songs (uuid,album,title,artist,file_name) values (?,?,?,?,?)",(str(uuid.uuid1()),album, title, artist, fname))
 
         conn.commit()
         conn.close()
+    return redirect("/home", code=302)
+
+
+@app.route("/delete/<string:uuid>", methods=["POST"])
+def delete(uuid):
+    conn = sqlite3.connect('music')
+    cur = conn.cursor()
+    cur.execute("DELETE from songs where uuid = '" + uuid + "'")
+    conn.commit()
+    conn.close()
     return redirect("/home", code=302)
