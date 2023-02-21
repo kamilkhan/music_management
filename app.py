@@ -75,6 +75,11 @@ def download(filename):
     return send_from_directory(directory='songs', path=filename, as_attachment=True)
 
 
+@app.route('/play/<path:filename>', methods=['GET'])
+def play(filename):
+    return render_template('play_song.html',filename=filename)
+
+
 def make_items(cursor):
     items = []
     for row in cursor:

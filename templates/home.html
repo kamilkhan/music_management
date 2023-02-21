@@ -41,6 +41,11 @@ table, th, td {
             <input button type="submit" value = "Download"/>
         </form>
     </td>
+     <td>
+        <form action="/play/{{item.fname}}" method="get">
+            <input button type="submit" value = "Play"/>
+        </form>
+    </td>
  </TR>
 {% endfor %}
 </table>
