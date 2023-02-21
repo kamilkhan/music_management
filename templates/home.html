@@ -17,7 +17,13 @@ table, th, td {
     <input type="submit" value = "Search"/>
 </form>
 <h4>No of Songs Found {{no_of_songs}}</h4>
-<table>
+{% if no_of_songs is eq 0 %}
+    <form action="/upload_song_form">
+        <input type="submit" value = "Upload New Song"/>
+    </form>
+{% endif %}
+{% if no_of_songs is gt 0 %}
+    <table>
         <tr>
             <td width="25%">Album</td>
             <td width="25%">Title</td>
@@ -40,12 +46,12 @@ table, th, td {
         </form>
     </td>
     <td>
-        <form action="/download/{{item.fname}}" method="get">
+        <form action="/download/{{item.uuid}}" method="get">
             <input button type="submit" value = "Download"/>
         </form>
     </td>
      <td>
-        <form action="/play/{{item.fname}}" method="get">
+        <form action="/play/{{item.uuid}}" method="get">
             <input button type="submit" value = "Play"/>
         </form>
     </td>
@@ -56,6 +62,8 @@ table, th, td {
     </td>
  </tr>
 {% endfor %}
+{% endif %}
+
 </table>
 </div>
 </body>

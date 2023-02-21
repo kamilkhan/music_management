@@ -3,14 +3,14 @@ from werkzeug.utils import secure_filename
 import sqlite3
 import os
 import uuid
-import socket
 
 app = Flask(__name__, static_folder='songs')
+
 
 @app.route('/home')
 def home():
     conn = sqlite3.connect('music')
-    cursor = conn.execute("SELECT album,title,artist,file_name,uuid from songs")
+    cursor = conn.execute("SELECT album,title,artist,uuid from songs")
     items = make_items(cursor)
     conn.close()
     return render_template('home.html', items=items,no_of_songs=len(items))
@@ -22,7 +22,7 @@ def search():
     if search_token == '':
         return redirect("/home", code=302)
     conn = sqlite3.connect('music')
-    query = "select album,title,artist,file_name,uuid from songs where album like '%" + search_token \
+    query = "select album,title,artist,uuid from songs where album like '%" + search_token \
             + "%' or title like '%" + search_token + "%' or artist like '%" + search_token + "%'"
     cursor = conn.execute(query)
     items = make_items(cursor)
@@ -53,10 +53,12 @@ def upload():
             return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
         if fname == '':
             return render_template("upload_song_form.html", error_message = "Please select Audio File")
+        uuid_string = str(uuid.uuid1())
+        fname = uuid_string + ".mp3"
         f.save(os.getcwd() + "/songs/"+fname)
         conn = sqlite3.connect('music')
         cur = conn.cursor()
-        cur.execute("INSERT INTO songs (uuid,album,title,artist,file_name) values (?,?,?,?,?)",(str(uuid.uuid1()),album, title, artist, fname))
+        cur.execute("INSERT INTO songs (uuid,album,title,artist) values (?,?,?,?)", (uuid_string, album, title, artist))
         conn.commit()
         conn.close()
     return redirect("/home", code=302)
@@ -69,22 +71,25 @@ def delete(uuid):
     cur.execute("DELETE from songs where uuid = '" + uuid + "'")
     conn.commit()
     conn.close()
+    os.remove("songs/" + uuid + ".mp3")
     return redirect("/home", code=302)
 
 
-@app.route('/download/<path:filename>', methods=['GET'])
-def download(filename):
+@app.route('/download/<path:uuid>', methods=['GET'])
+def download(uuid):
+    filename = uuid + ".mp3"
     return send_from_directory(directory='songs', path=filename, as_attachment=True)
 
 
-@app.route('/play/<path:filename>', methods=['GET'])
-def play(filename):
-    return render_template('play_song.html',filename=filename)
+@app.route('/play/<path:uuid>', methods=['GET'])
+def play(uuid):
+    filename = uuid + ".mp3"
+    return render_template('play_song.html', filename=filename)
 
 
-@app.route('/play_shared_song/<string:enc>', methods=['GET'])
-def play_shared_song(enc):
-    filename = "aaa.mp3"
+@app.route('/play_shared_song/<string:uuid>', methods=['GET'])
+def play_shared_song(uuid):
+    filename = uuid + ".mp3"
     return render_template('play_shared_song.html',filename=filename)
 
 
@@ -103,8 +108,7 @@ def make_items(cursor):
         item['album'] = row[0]
         item['title'] = row[1]
         item['artist'] = row[2]
-        item['fname'] = row[3]
-        item['uuid'] = row[4]
+        item['uuid'] = row[3]
         items.append(item)
     return items
 
