@@ -1,6 +1,6 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/html">
-<title>Music Management Systemk</title>
+<html>
+<title>Music Management System</title>
 <head>
 <style>
 table, th, td {
@@ -9,26 +9,30 @@ table, th, td {
 </style>
 </head>
 <body>
+<div align="center">
 <h1> Welcome to Music Management Portal</h1>
-<br><br>
 <form action="/search" method="post">
     Enter Album/Title/Artist
-    <input type="text" name="search" value = "{{search_text}}" />
+    <input type="text" title="E.g. lga would work for Alga Yagnik" size="50" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
-
-<br>
-<form action="/upload_song_form">
-    <input type="submit" value = "Upload New Song"/>
-</form>
-<br>
+<h4>No of Songs Found {{no_of_songs}}</h4>
 <table>
-    <tr><td>Album</td><td>Title</td><td>Artist</td></tr>
+        <tr>
+            <td width="25%">Album</td>
+            <td width="25%">Title</td>
+            <td width="25%">Artist</td>
+            <td colspan="4">
+                <form action="/upload_song_form">
+                    <input type="submit" value = "Upload New Song"/>
+                </form>
+            </td>
+        </tr>
 {% for item in items %}
-<TR>
-    <TD>{{item.album}}</TD>
-    <TD>{{item.title}}</TD>
-    <TD>{{item.artist}}</TD>
+<tr>
+    <td>{{item.album}}</td>
+    <td>{{item.title}}</td>
+    <td>{{item.artist}}</td>
 
     <td>
         <form action="/delete/{{item.uuid}}" method="post">
@@ -50,8 +54,9 @@ table, th, td {
             <input button type="submit" value = "Share"/>
         </form>
     </td>
- </TR>
+ </tr>
 {% endfor %}
 </table>
+</div>
 </body>
 </html>

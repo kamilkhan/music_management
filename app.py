@@ -13,7 +13,7 @@ def home():
     cursor = conn.execute("SELECT album,title,artist,file_name,uuid from songs")
     items = make_items(cursor)
     conn.close()
-    return render_template('home.html', items=items)
+    return render_template('home.html', items=items,no_of_songs=len(items))
 
 
 @app.route('/search', methods=['POST'])
@@ -22,13 +22,12 @@ def search():
     if search_token == '':
         return redirect("/home", code=302)
     conn = sqlite3.connect('music')
-    query = "select album,title,artist,file_name,uuid from songs where album = '" + search_token \
-            + "' or title = '" + search_token + "' or artist = '" + search_token + "'"
-    print(query)
+    query = "select album,title,artist,file_name,uuid from songs where album like '%" + search_token \
+            + "%' or title like '%" + search_token + "%' or artist like '%" + search_token + "%'"
     cursor = conn.execute(query)
     items = make_items(cursor)
     conn.close()
-    return render_template('home.html', items=items, search_text = search_token)
+    return render_template('home.html', items=items, search_text=search_token, no_of_songs=len(items))
 
 
 @app.route("/")

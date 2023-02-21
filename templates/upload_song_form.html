@@ -7,17 +7,19 @@
 <body>
 <br>
      {{error_message}}
-    <h1>Upload MP3 File</h1>
 
-    <br>
+<div align="center">
+      <h1>Upload MP3 File</h1>
   <form action="/upload_song" enctype="multipart/form-data" method="POST">
-    Album: <input type="text" name="album"/> <br><br>
-    Title: <input type="text" name="title"/> <br><br>
-    Artist: <input type="text" name="artist"/> <br><br>
+    Album:  <input type="text" name="album" size="50"/> <br><br>
+    Title:  <input type="text" name="title" size="50"/> <br><br>
+    Artist: <input type="text" name="artist" size="50"/> <br><br>
       <input type="file" id="songFile" name="filename" accept=".mp3"> <br><br>
-
-      <input type="submit" value = "Upload">
+      <input type="submit" value = "Upload"> &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="/home"> Go to Song Catalogue</a>
   </form>
+</div>
+
 
 </body>
 </html>
