@@ -16,13 +16,14 @@ table, th, td {
     <input type="text" title="E.g. lga would work for Alga Yagnik" size="50" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
-<h4>No of Songs Found {{no_of_songs}}</h4>
 {% if no_of_songs is eq 0 %}
+    <h4>No of Songs Found</h4>
     <form action="/upload_song_form">
         <input type="submit" value = "Upload New Song"/>
     </form>
 {% endif %}
 {% if no_of_songs is gt 0 %}
+    <h4>Songs Found : {{no_of_songs}}</h4>
     <table>
         <tr>
             <td width="25%">Album</td>
