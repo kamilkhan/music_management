@@ -4,8 +4,11 @@ Music management/sharing/streaming platform
 
 Steps to run:
 git clone https://github.com/kamilkhan/music_management.git
+
 cd music_management
+
 sh install.sh
+
 flask run
 
 1. Listing of Songs
