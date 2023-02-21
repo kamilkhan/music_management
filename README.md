@@ -4,8 +4,8 @@ Music management/sharing/streaming platform
 
 Steps to run:
 
-Note: This application will run on port 5555. It is hard coded for simplicity.
-If any other application is running on 5555, Please edit the toml file
+Note: This application will run on port 5000. It is hard coded for simplicity.
+
 
 git clone https://github.com/kamilkhan/music_management.git
 
