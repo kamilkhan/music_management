@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import db
 import os
 import uuid
+import re
 
 
 # Followed Guidelines from https://flask.palletsprojects.com/en/2.2.x/tutorial/factory/
@@ -37,6 +38,9 @@ def search():
     search_token = request.form.get('search')
     if search_token == '':
         return redirect("/home", code=302)
+    s_flag = bool(re.match('^[a-zA-Z0-9 ]*$', search_token))
+    if s_flag is False:
+        return render_template('security_violation.html')
     conn = db.get_db()
     query = "select album,title,artist,uuid from songs where album like '%" + search_token \
             + "%' or title like '%" + search_token + "%' or artist like '%" + search_token + "%'"
@@ -70,6 +74,10 @@ def upload():
             return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
         if file_name == '':
             return render_template("upload_song_form.html", error_message = "Please select Audio File")
+        s_flag = bool(re.match('^[a-zA-Z0-9 ]*$', album)) and bool(re.match('^[a-zA-Z0-9 ]*$', title)) \
+                 and bool(re.match('^[a-zA-Z0-9 ]*$', artist))
+        if s_flag is False:
+            return render_template('security_violation.html')
         uuid_string = str(uuid.uuid1())
         file_name = uuid_string + ".mp3"
         f.save(os.getcwd() + "/" + app.config['folder'] + "/" + file_name)
