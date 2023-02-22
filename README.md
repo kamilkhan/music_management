@@ -11,7 +11,7 @@ git clone https://github.com/kamilkhan/music_management.git
 
 cd music_management
 
-sh install.sh
+flask init
 
 flask run
 
