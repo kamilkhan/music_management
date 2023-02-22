@@ -2,10 +2,12 @@
 <html>
 <title>Music Management System</title>
 <head>
-<link rel="stylesheet" href="static/css/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-<div align="center">
+<div class="container" align="center">
 <h1> Music Management Portal</h1>
 <form action="/search" method="post">
     Enter Album/Title/Artist
@@ -20,7 +22,7 @@
 {% endif %}
 {% if no_of_songs is gt 0 %}
     <h4>Songs Found : {{no_of_songs}}</h4>
-    <table>
+    <table class="table table-striped">
         <tr>
             <td width="25%">Album</td>
             <td width="25%">Title</td>
