@@ -4,7 +4,7 @@ import sqlite3
 import os
 import uuid
 
-app = Flask(__name__, static_folder='songs')
+app = Flask(__name__, static_folder='static')
 
 
 @app.route('/home')
@@ -55,7 +55,9 @@ def upload():
             return render_template("upload_song_form.html", error_message = "Please select Audio File")
         uuid_string = str(uuid.uuid1())
         fname = uuid_string + ".mp3"
-        f.save(os.getcwd() + "/songs/"+fname)
+        if not os.path.isdir(os.getcwd() + "/static/songs"):
+            os.makedirs(os.getcwd() + "/static/songs")
+        f.save(os.getcwd() + "/static/songs/"+fname)
         conn = sqlite3.connect('music')
         cur = conn.cursor()
         cur.execute("INSERT INTO songs (uuid,album,title,artist) values (?,?,?,?)", (uuid_string, album, title, artist))
@@ -71,14 +73,14 @@ def delete(uuid):
     cur.execute("DELETE from songs where uuid = '" + uuid + "'")
     conn.commit()
     conn.close()
-    os.remove("songs/" + uuid + ".mp3")
+    os.remove("static/songs/" + uuid + ".mp3")
     return redirect("/home", code=302)
 
 
 @app.route('/download/<path:uuid>', methods=['GET'])
 def download(uuid):
     filename = uuid + ".mp3"
-    return send_from_directory(directory='songs', path=filename, as_attachment=True)
+    return send_from_directory(directory='static/songs', path=filename, as_attachment=True)
 
 
 @app.route('/play/<path:uuid>', methods=['GET'])
