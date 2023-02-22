@@ -23,7 +23,7 @@
 {% if no_of_songs is gt 0 %}
     <h4>Songs Found : {{no_of_songs}}</h4>
     <table class="table table-striped">
-        <tr>
+        <thead>
             <td width="25%">Album</td>
             <td width="25%">Title</td>
             <td width="25%">Artist</td>
@@ -32,7 +32,7 @@
                     <input type="submit" value = "Upload New Song"/>
                 </form>
             </td>
-        </tr>
+        </thead>
 {% for item in items %}
 <tr>
     <td>{{item.album}}</td>
