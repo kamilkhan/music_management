@@ -5,15 +5,14 @@ import os
 import uuid
 
 
-def create_app(test_config=None):
+# Followed Guidelines from https://flask.palletsprojects.com/en/2.2.x/tutorial/factory/
+def create_app():
     music_app = Flask(__name__, instance_relative_config=True)
     music_app.config.from_mapping(
-        SECRET_KEY='dev',DATABASE=os.path.join(music_app.instance_path, 'music'),
+        # need to change secret key in production
+        SECRET_KEY='dev', DATABASE=os.path.join(music_app.instance_path, 'music'),
     )
-    if test_config is None:
-        music_app.config.from_pyfile('config.py', silent=True)
-    else:
-        music_app.config.from_mapping(test_config)
+    music_app.config['folder'] = 'static'
     try:
         os.makedirs(music_app.instance_path)
     except OSError:
@@ -56,6 +55,7 @@ def upload_form():
     return render_template('upload_song_form.html')
 
 
+# used werkzeug library for uploading files.
 @app.route('/upload_song', methods=['POST'])
 def upload():
     if request.method == 'POST':
@@ -64,14 +64,16 @@ def upload():
         title = request.form.get('title')
         artist = request.form.get('artist')
         f = d.get('filename')
-        fname = f.filename
+        file_name = f.filename
+        # Make sure album or title or artist is configured. I did not find any reason for all these three fields
+        # to be empty. Subsequently checked for the presence of audio file. Saved file with the uuid to be unique
         if album == '' and title == '' and artist == "":
             return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
-        if fname == '':
+        if file_name == '':
             return render_template("upload_song_form.html", error_message = "Please select Audio File")
         uuid_string = str(uuid.uuid1())
-        fname = uuid_string + ".mp3"
-        f.save(os.getcwd() + "/static/"+fname)
+        file_name = uuid_string + ".mp3"
+        f.save(os.getcwd() + "/" + app.config['folder'] + "/" + file_name)
         conn = db.get_db()
         cur = conn.cursor()
         cur.execute("INSERT INTO songs (uuid,album,title,artist) values (?,?,?,?)", (uuid_string, album, title, artist))
@@ -81,37 +83,44 @@ def upload():
 
 @app.route("/delete/<string:uuid>", methods=["POST"])
 def delete(uuid):
+    # Need to make sure deletion from db and file system to be atomic
     conn = db.get_db()
     cur = conn.cursor()
     cur.execute("DELETE from songs where uuid = '" + uuid + "'")
     conn.commit()
-    os.remove(os.getcwd() + "/static/" + uuid + ".mp3")
+    os.remove(os.getcwd() + "/" + app.config['folder'] + "/" + uuid + ".mp3")
     return redirect("/home", code=302)
 
 
-@app.route('/download/<path:uuid>', methods=['GET'])
-def download(uuid):
-    filename = uuid + ".mp3"
-    return send_from_directory(directory='static', path=filename, as_attachment=True)
+@app.route('/download/<path:_uuid>', methods=['GET'])
+def download(_uuid):
+    return send_from_directory(directory=app.config['folder'], path=_uuid + ".mp3", as_attachment=True)
 
 
-@app.route('/play/<path:uuid>', methods=['GET'])
-def play(uuid):
-    filename = uuid + ".mp3"
-    return render_template('play_song.html', filename=filename)
+@app.route('/play/<path:_uuid>', methods=['GET'])
+def play(_uuid):
+    filename = _uuid + ".mp3"
+    conn = db.get_db()
+    query = "select album,title,artist from songs where uuid = '" + _uuid + "'"
+    row = conn.execute(query).fetchone()
+    return render_template('play_song.html', filename=filename, album=row[0], title=row[1], artist=row[2])
 
 
-@app.route('/play_shared_song/<string:uuid>', methods=['GET'])
-def play_shared_song(uuid):
-    filename = uuid + ".mp3"
-    return render_template('play_shared_song.html',filename=filename)
+@app.route('/play_shared_song/<string:_uuid>', methods=['GET'])
+def play_shared_song(_uuid):
+    filename = _uuid + ".mp3"
+    conn = db.get_db()
+    query = "select album,title,artist from songs where uuid = '" + _uuid + "'"
+    row = conn.execute(query).fetchone()
+    return render_template('play_shared_song.html',filename=filename, album=row[0], title=row[1], artist=row[2])
 
 
-@app.route('/share/<string:uuid>', methods=['GET'])
-def share(uuid):
+@app.route('/share/<string:_uuid>', methods=['GET'])
+def share(_uuid):
+    # Hard coded as of now.
     port = "5000"
     ip_address = "localhost"
-    url = "http://"+ip_address+":"+port+"/play_shared_song/" + uuid
+    url = "http://"+ip_address+":"+port+"/play_shared_song/" + _uuid
     return render_template('share_page.html', url=url)
 
 
