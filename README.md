@@ -26,7 +26,8 @@ flask run
 Technology:
 
 Python3/Flask for the backend
-SQLite
+
+SQLite as database
 
 Simple, separate HTML pages using Jinja
 
