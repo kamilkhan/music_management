@@ -10,7 +10,7 @@
 <div class="container" align="center">
 <h1> Music Management Portal</h1> <br>
 <form action="/search" method="post">
-    Enter Album/Title/Artist
+    Enter Album/Title/Artist&nbsp;&nbsp;&nbsp;
     <input type="text" title="E.g. lga should work for Alga Yagnik. Presence of Special characters will be treated as security violation" size="50" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
@@ -23,16 +23,16 @@
 {% endif %}
 {% if no_of_songs is gt 0 %}
     <h4>Songs Found : {{no_of_songs}}</h4>
-    <table class="table table-striped">
+    <table class="table table-bordered table-hover">
         <thead>
-            <td width="25%">Album</td>
-            <td width="25%">Title</td>
-            <td width="25%">Artist</td>
-            <td colspan="4">
+            <th width="25%">Album</th>
+            <th width="25%">Title</th>
+            <th width="25%">Artist</th>
+            <th colspan="4">
                 <form action="/upload_song_form">
                     <input type="submit" class="btn btn-link" value = "Upload New Song"/>
                 </form>
-            </td>
+            </th>
         </thead>
 {% for item in items %}
 <tr>
