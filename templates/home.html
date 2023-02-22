@@ -1,23 +1,24 @@
 <!doctype html>
-<html>
+<html data-bs-theme="dark">
 <title>Music Management System</title>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="static/css/bootstrap.css" rel="stylesheet">
+     <link href="static/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
 <div class="container" align="center">
-<h1> Music Management Portal</h1>
+<h1> Music Management Portal</h1> <br>
 <form action="/search" method="post">
     Enter Album/Title/Artist
     <input type="text" title="E.g. lga should work for Alga Yagnik. Presence of Special characters will be treated as security violation" size="50" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
+<br>
 {% if no_of_songs is eq 0 %}
     <h4>No of Songs Found</h4>
     <form action="/upload_song_form">
-        <input type="submit" value = "Upload New Song"/>
+        <input type="submit" class="btn btn-link" value = "Upload New Song"/>
     </form>
 {% endif %}
 {% if no_of_songs is gt 0 %}
@@ -29,7 +30,7 @@
             <td width="25%">Artist</td>
             <td colspan="4">
                 <form action="/upload_song_form">
-                    <input type="submit" value = "Upload New Song"/>
+                    <input type="submit" class="btn btn-link" value = "Upload New Song"/>
                 </form>
             </td>
         </thead>
@@ -41,22 +42,22 @@
 
     <td>
         <form action="/delete/{{item.uuid}}" method="post">
-            <input button type="submit" value = "Delete"/>
+            <input button type="submit" class="btn btn-danger" value = "Delete"/>
         </form>
     </td>
     <td>
         <form action="/download/{{item.uuid}}" method="get">
-            <input button type="submit" value = "Download"/>
+            <input button type="submit" class="btn btn-success" value = "Download"/>
         </form>
     </td>
      <td>
         <form action="/play/{{item.uuid}}" method="get">
-            <input button type="submit" value = "Play"/>
+            <input button type="submit" class="btn btn-primary" value = "Play"/>
         </form>
     </td>
     <td>
         <form action="/share/{{item.uuid}}" method="get">
-            <input button type="submit" value = "Share"/>
+            <input button type="submit" class="btn btn-warning" value = "Share"/>
         </form>
     </td>
  </tr>

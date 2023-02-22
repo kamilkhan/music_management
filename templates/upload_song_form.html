@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
 <div class="container" align="center">
-     <h1> Music Management Portal</h1>
+     <h1> Music Management Portal</h1><br>
      <h2>Upload MP3 File</h2>
      <h3> {{error_message}}</h3>
   <form action="/upload_song" enctype="multipart/form-data" method="POST">
@@ -15,7 +15,7 @@
     Title:  <input type="text" name="title" size="50"/> <br><br>
     Artist: <input type="text" name="artist" size="50"/> <br><br>
       <input type="file" id="songFile" name="filename" accept=".mp3"> <br><br>
-      <input type="submit" value = "Upload"> &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" value = "Upload" class = "btn btn-primary"> &nbsp;&nbsp;&nbsp;&nbsp;
       <a href="/home"> Go to Song Catalogue</a>
   </form>
 </div>
