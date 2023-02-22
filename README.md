@@ -15,6 +15,8 @@ flask init
 
 flask run
 
+Functionalities:
+
 1. Listing of Songs
 2. Search of Songs based on album, title or artist
 3. Deleting a Song
