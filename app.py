@@ -60,13 +60,12 @@ def upload_form():
 def upload():
     if request.method == 'POST':
         d = request.files
-        album = request.form.get('album')
-        title = request.form.get('title')
-        artist = request.form.get('artist')
+        (album, title, artist) = (request.form.get('album'),request.form.get('title'),  request.form.get('artist'))
         f = d.get('filename')
         file_name = f.filename
         # Make sure album or title or artist is configured. I did not find any reason for all these three fields
-        # to be empty. Subsequently checked for the presence of audio file. Saved file with the uuid to be unique
+        # to be empty. Subsequently, checked for the presence of audio file. Saved file with the name of uuid
+        # to be unique
         if album == '' and title == '' and artist == "":
             return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
         if file_name == '':
