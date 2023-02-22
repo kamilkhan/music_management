@@ -11,6 +11,8 @@ git clone https://github.com/kamilkhan/music_management.git
 
 cd music_management
 
+pip install -r requirements.txt (In case you do not have flask installed or if you want to run in a virtual environment)
+
 flask init
 
 flask run
