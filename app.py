@@ -5,15 +5,13 @@ import os
 import uuid
 
 
-def create_app(test_config=None):
+def create_app():
     music_app = Flask(__name__, instance_relative_config=True)
     music_app.config.from_mapping(
-        SECRET_KEY='dev',DATABASE=os.path.join(music_app.instance_path, 'music'),
+        # need to change secret key in production
+        SECRET_KEY='dev', DATABASE=os.path.join(music_app.instance_path, 'music'),
     )
-    if test_config is None:
-        music_app.config.from_pyfile('config.py', silent=True)
-    else:
-        music_app.config.from_mapping(test_config)
+    music_app.config['folder'] = '/static/'
     try:
         os.makedirs(music_app.instance_path)
     except OSError:
@@ -64,14 +62,14 @@ def upload():
         title = request.form.get('title')
         artist = request.form.get('artist')
         f = d.get('filename')
-        fname = f.filename
+        file_name = f.filename
         if album == '' and title == '' and artist == "":
             return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
-        if fname == '':
+        if file_name == '':
             return render_template("upload_song_form.html", error_message = "Please select Audio File")
         uuid_string = str(uuid.uuid1())
-        fname = uuid_string + ".mp3"
-        f.save(os.getcwd() + "/static/"+fname)
+        file_name = uuid_string + ".mp3"
+        f.save(os.getcwd() + app.config['folder'] + file_name)
         conn = db.get_db()
         cur = conn.cursor()
         cur.execute("INSERT INTO songs (uuid,album,title,artist) values (?,?,?,?)", (uuid_string, album, title, artist))
@@ -98,12 +96,18 @@ def download(uuid):
 @app.route('/play/<path:uuid>', methods=['GET'])
 def play(uuid):
     filename = uuid + ".mp3"
-    return render_template('play_song.html', filename=filename)
+    conn = db.get_db()
+    query = "select album,title,artist from songs where uuid = '" + uuid + "'"
+    row = conn.execute(query).fetchone()
+    return render_template('play_song.html', filename=filename, album=row[0], title=row[1], artist=row[2])
 
 
 @app.route('/play_shared_song/<string:uuid>', methods=['GET'])
 def play_shared_song(uuid):
     filename = uuid + ".mp3"
+    conn = db.get_db()
+    query = "select album,title,artist from songs where uuid = '" + uuid + "'"
+    row = conn.execute(query).fetchone()
     return render_template('play_shared_song.html',filename=filename)
 
 
