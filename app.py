@@ -6,7 +6,7 @@ import uuid
 import re
 
 
-# Followed Guidelines from https://flask.palletsprojects.com/en/2.2.x/tutorial/factory/
+# Followed the Guidelines from https://flask.palletsprojects.com/en/2.2.x/tutorial/factory/
 def create_app():
     music_app = Flask(__name__, instance_relative_config=True)
     music_app.config.from_mapping(
@@ -23,6 +23,11 @@ def create_app():
 
 
 app = create_app()
+
+
+@app.route("/")
+def root():
+    return redirect("/home", code=302)
 
 
 @app.route('/home')
@@ -49,11 +54,6 @@ def search():
     return render_template('home.html', items=items, search_text=search_token, no_of_songs=len(items))
 
 
-@app.route("/")
-def root():
-    return redirect("/home", code=302)
-
-
 @app.route('/upload_song_form')
 def upload_form():
     return render_template('upload_song_form.html')
@@ -71,7 +71,7 @@ def upload():
         # Make sure album or title or artist is configured. I did not find any reason for all these three fields
         # to be empty. Subsequently, checked for the presence of audio file. Saved file with the name of uuid
         # to be unique.
-        if album == '' and title == '' and artist == "":
+        if album == '' and title == '' and artist == '':
             return render_template("upload_song_form.html",
                                    error_message="Please enter either album or title or artist")
         if file_name == '':
@@ -89,8 +89,8 @@ def upload():
     return redirect("/home", code=302)
 
 
-@app.route("/delete/<string:uuid>", methods=["POST"])
-def delete(uuid):
+@app.route("/delete/<string:_uuid>", methods=["POST"])
+def delete(_uuid):
     # Need to make sure deletion from db and file system to be atomic
     conn = db.get_db()
     cur = conn.cursor()
