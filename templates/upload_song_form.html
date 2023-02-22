@@ -5,11 +5,11 @@
     <title>Song Upload</title>
 </head>
 <body>
-<br>
-     {{error_message}}
+
 
 <div align="center">
-      <h1>Upload MP3 File</h1>
+     <h1>Upload MP3 File</h1>
+     <h3> {{error_message}}</h3>
   <form action="/upload_song" enctype="multipart/form-data" method="POST">
     Album:  <input type="text" name="album" size="50"/> <br><br>
     Title:  <input type="text" name="title" size="50"/> <br><br>

@@ -94,9 +94,9 @@ def delete(_uuid):
     # Need to make sure deletion from db and file system to be atomic
     conn = db.get_db()
     cur = conn.cursor()
-    cur.execute("DELETE from songs where uuid = '" + uuid + "'")
+    cur.execute("DELETE from songs where uuid = '" + _uuid + "'")
     conn.commit()
-    os.remove(os.getcwd() + "/" + app.config['folder'] + "/" + uuid + ".mp3")
+    os.remove(os.getcwd() + "/" + app.config['folder'] + "/" + _uuid + ".mp3")
     return redirect("/home", code=302)
 
 
