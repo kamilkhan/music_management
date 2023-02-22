@@ -9,7 +9,7 @@
 <h1> Welcome to Music Management Portal</h1>
 <form action="/search" method="post">
     Enter Album/Title/Artist
-    <input type="text" title="E.g. lga would work for Alga Yagnik" size="50" name="search" value = "{{search_text}}" />
+    <input type="text" title="E.g. lga should work for Alga Yagnik. Presence of Special characters will be treated as security violation" size="50" name="search" value = "{{search_text}}" />
     <input type="submit" value = "Search"/>
 </form>
 {% if no_of_songs is eq 0 %}
