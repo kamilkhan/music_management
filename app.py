@@ -1,4 +1,4 @@
-from flask import render_template,Flask,request,redirect, send_from_directory
+from flask import render_template, Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import db
 import os
@@ -30,7 +30,7 @@ def home():
     conn = db.get_db()
     cursor = conn.execute("SELECT album,title,artist,uuid from songs")
     items = make_items(cursor)
-    return render_template('home.html', items=items,no_of_songs=len(items))
+    return render_template('home.html', items=items, no_of_songs=len(items))
 
 
 @app.route('/search', methods=['POST'])
@@ -59,23 +59,24 @@ def upload_form():
     return render_template('upload_song_form.html')
 
 
-# used werkzeug library for uploading files.
+# used werkzeug library for uploading files. Storing audio file in static folder for play, share purpose. There may be
+# some security violations here.
 @app.route('/upload_song', methods=['POST'])
 def upload():
     if request.method == 'POST':
         d = request.files
-        (album, title, artist) = (request.form.get('album'),request.form.get('title'),  request.form.get('artist'))
+        (album, title, artist) = (request.form.get('album'), request.form.get('title'), request.form.get('artist'))
         f = d.get('filename')
         file_name = f.filename
         # Make sure album or title or artist is configured. I did not find any reason for all these three fields
         # to be empty. Subsequently, checked for the presence of audio file. Saved file with the name of uuid
-        # to be unique
+        # to be unique.
         if album == '' and title == '' and artist == "":
-            return render_template("upload_song_form.html", error_message="Please enter either album or title or artist")
+            return render_template("upload_song_form.html",
+                                   error_message="Please enter either album or title or artist")
         if file_name == '':
-            return render_template("upload_song_form.html", error_message = "Please select Audio File")
-        s_flag = bool(re.match('^[a-zA-Z0-9 ]*$', album)) and bool(re.match('^[a-zA-Z0-9 ]*$', title)) \
-                 and bool(re.match('^[a-zA-Z0-9 ]*$', artist))
+            return render_template("upload_song_form.html", error_message="Please select Audio File")
+        s_flag = bool(re.match('^[a-zA-Z0-9 ]*$', album)) and bool(re.match('^[a-zA-Z0-9 ]*$', title)) and bool(re.match('^[a-zA-Z0-9 ]*$', artist))
         if s_flag is False:
             return render_template('security_violation.html')
         uuid_string = str(uuid.uuid1())
@@ -119,7 +120,7 @@ def play_shared_song(_uuid):
     conn = db.get_db()
     query = "select album,title,artist from songs where uuid = '" + _uuid + "'"
     row = conn.execute(query).fetchone()
-    return render_template('play_shared_song.html',filename=filename, album=row[0], title=row[1], artist=row[2])
+    return render_template('play_shared_song.html', filename=filename, album=row[0], title=row[1], artist=row[2])
 
 
 @app.route('/share/<string:_uuid>', methods=['GET'])
@@ -127,7 +128,7 @@ def share(_uuid):
     # Hard coded as of now.
     port = "5000"
     ip_address = "localhost"
-    url = "http://"+ip_address+":"+port+"/play_shared_song/" + _uuid
+    url = "http://" + ip_address + ":" + port + "/play_shared_song/" + _uuid
     return render_template('share_page.html', url=url)
 
 
@@ -135,11 +136,6 @@ def make_items(cursor):
     items = []
     for row in cursor:
         item = dict()
-        item['album'] = row[0]
-        item['title'] = row[1]
-        item['artist'] = row[2]
-        item['uuid'] = row[3]
+        (item['album'], item['title'], item['artist'], item['uuid']) = (row[0], row[1], row[2], row[3])
         items.append(item)
     return items
-
-
