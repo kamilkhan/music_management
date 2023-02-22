@@ -1,4 +1,4 @@
-# Music_Management
+# Music Management
 
 Music management/sharing/streaming platform
 
