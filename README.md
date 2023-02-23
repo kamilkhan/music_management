@@ -4,7 +4,7 @@ Music management/sharing/streaming platform
 
 Steps to run:
 
-Note: This application will run on port 5000. It is hard coded for simplicity. Make sure flask is installed and it is in the path
+Note: This application will run on port 5000. It is hard coded for simplicity. Make sure sqlite is installed.
 
 
 git clone https://github.com/kamilkhan/music_management.git
